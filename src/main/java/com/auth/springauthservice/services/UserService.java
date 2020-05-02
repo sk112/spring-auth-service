@@ -1,9 +1,8 @@
 package com.auth.springauthservice.services;
 
-import org.springframework.stereotype.Service;
+import com.auth.springauthservice.models.User;
 
-@Service
-public class UserService {
-    
-    
+public interface UserService{
+    void save(User user);
+    User findByUserID(String userid);
 }

@@ -6,6 +6,11 @@ public class LoginUserDto {
     private String passwd;
     private String jwtToken;
 
+    private Boolean idOrPasswdNotMatch = false;
+    private Boolean LoginAgain = false;
+
+
+
     public LoginUserDto() {
     }
 
@@ -46,5 +51,29 @@ public class LoginUserDto {
         this.jwtToken = jwtToken;
     }
 
+
+    public Boolean isIdOrPasswdNotMatch() {
+        return this.idOrPasswdNotMatch;
+    }
+
+    public Boolean getIdOrPasswdNotMatch() {
+        return this.idOrPasswdNotMatch;
+    }
+
+    public void setIdOrPasswdNotMatch(Boolean idOrPasswdNotMatch) {
+        this.idOrPasswdNotMatch = idOrPasswdNotMatch;
+    }
+
+    public Boolean isLoginAgain() {
+        return this.LoginAgain;
+    }
+
+    public Boolean getLoginAgain() {
+        return this.LoginAgain;
+    }
+
+    public void setLoginAgain(Boolean LoginAgain) {
+        this.LoginAgain = LoginAgain;
+    }
 
 }

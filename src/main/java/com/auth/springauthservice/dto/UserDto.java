@@ -18,9 +18,11 @@ public class UserDto {
     private String password;
     private String confirmPassword;
 
-    @NotEmpty
+    @NotNull
     @NotEmpty
     private String email;
+
+    private Boolean passwdDoesNotMatch = false;
 
     public UserDto(){}
 
@@ -62,7 +64,19 @@ public class UserDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }  
+
+
+    public Boolean isPasswdDoesNotMatch() {
+        return this.passwdDoesNotMatch;
     }
 
-    
+    public Boolean getPasswdDoesNotMatch() {
+        return this.passwdDoesNotMatch;
+    }
+
+    public void setPasswdDoesNotMatch(Boolean passwdDoesNotMatch) {
+        this.passwdDoesNotMatch = passwdDoesNotMatch;
+    }
+
 }

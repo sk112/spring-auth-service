@@ -2,17 +2,12 @@ package com.auth.springauthservice.controllers;
 
 import com.auth.springauthservice.dto.LoginUserDto;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 public class HomeController {
-
-    @GetMapping("/home")
-    public String homePage(){
-        return "Hello World!";
-    }      
    
     @GetMapping(value = "/auth")
     public String loginPage(Model model){
@@ -20,4 +15,11 @@ public class HomeController {
         return "login";
     }
 
+    @GetMapping("/loginError")
+    public String loginError(Model model){
+        LoginUserDto user = new LoginUserDto();
+        user.setIdOrPasswdNotMatch(true);
+        model.addAttribute("model", user);
+        return "login";
+    }
 }
