@@ -22,8 +22,6 @@ public class UserDto {
     @NotEmpty
     private String email;
 
-    private Boolean passwdDoesNotMatch = false;
-
     public UserDto(){}
 
     public String getFirstName() {
@@ -65,18 +63,4 @@ public class UserDto {
     public void setEmail(String email) {
         this.email = email;
     }  
-
-
-    public Boolean isPasswdDoesNotMatch() {
-        return this.passwdDoesNotMatch;
-    }
-
-    public Boolean getPasswdDoesNotMatch() {
-        return this.passwdDoesNotMatch;
-    }
-
-    public void setPasswdDoesNotMatch(Boolean passwdDoesNotMatch) {
-        this.passwdDoesNotMatch = passwdDoesNotMatch;
-    }
-
 }

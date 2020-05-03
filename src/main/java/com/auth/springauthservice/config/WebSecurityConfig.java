@@ -2,6 +2,8 @@ package com.auth.springauthservice.config;
 
 import javax.sql.DataSource;
 
+import com.auth.springauthservice.ForwardAuthenticationSuccessHandler;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,12 +12,14 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer.AuthorizationEndpointConfig;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -25,7 +29,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     DataSource datasource;
 
     @Autowired
+    JwtFilterRequest jwtFilterRequest;
+
+    @Autowired
     JdbcUserDetailsManager jdbcUserDetailsManager;
+
+    @Autowired
+    private ForwardAuthenticationSuccessHandler successHandler;
+
+    @Autowired
+    private JwtAuthenticationEntryPoint authenticationEntryPoint;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -36,6 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+            .addFilterBefore(jwtFilterRequest, UsernamePasswordAuthenticationFilter.class)
             .csrf()
             .disable()
             .authorizeRequests()
@@ -45,7 +59,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
             .antMatchers("/login**").permitAll()
             .anyRequest().authenticated()
             .and()
-            .formLogin()
+            .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
+            .and()
+            .formLogin().successHandler(successHandler)
             .loginPage("/auth")
             .and()
             .logout()
@@ -58,13 +74,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Bean
     UserDetailsManager usersDetailsManager(DataSource dataSource){
         
-        UserDetails user = User.builder()
-                               .username("admin")
-                               .password(passwordEncoder().encode("admin"))
-                               .roles("USER", "ADMIN")
-                               .build();
+        // UserDetails user = User.builder()
+        //                        .username("admin")
+        //                        .password(passwordEncoder().encode("admin"))
+        //                        .roles("USER", "ADMIN")
+        //                        .build();
 
-        jdbcUserDetailsManager.createUser(user);
+        // jdbcUserDetailsManager.createUser(user);
         return jdbcUserDetailsManager;
     }
 
@@ -74,7 +90,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
@@ -83,5 +99,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     protected AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
     }
-
 }
